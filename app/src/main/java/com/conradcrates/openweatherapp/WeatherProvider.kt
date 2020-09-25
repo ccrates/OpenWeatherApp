@@ -1,6 +1,9 @@
 package com.conradcrates.openweatherapp
 
-interface WeatherProvider {
+class WeatherProvider(
+    private val weatherService: WeatherProviderService) {
 
-    fun fetchWeatherData()
+    fun fetchWeatherData(){
+        weatherService.fetchWeatherData()
+    }
 }
