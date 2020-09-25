@@ -19,6 +19,10 @@ allprojects {
         google()
         jcenter()
     }
+
+    ext{
+        kotlin_mocks_version = '2.2.0'
+    }
 }
 
 task clean(type: Delete) {
