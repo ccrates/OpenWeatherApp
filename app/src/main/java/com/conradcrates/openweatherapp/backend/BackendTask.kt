@@ -7,7 +7,7 @@ open class BackendTask<T>(task: (BackendTask<T>) -> Unit) {
     }
 
     private val successListeners = ArrayList<(T) -> Unit>()
-    private val errorListeners = ArrayList<(T) -> Unit>()
+    private val errorListeners = ArrayList<(T?) -> Unit>()
 
     fun successResult(result: T){
         for(listener in successListeners){
@@ -15,7 +15,7 @@ open class BackendTask<T>(task: (BackendTask<T>) -> Unit) {
         }
     }
 
-    fun errorResult(result: T){
+    fun errorResult(result: T?){
         for (listener in errorListeners){
             listener.invoke(result)
         }
@@ -26,7 +26,7 @@ open class BackendTask<T>(task: (BackendTask<T>) -> Unit) {
         return this
     }
 
-    open fun addOnErrorListener(onErrorListener: (result: T) -> Unit): BackendTask<T> {
+    open fun addOnErrorListener(onErrorListener: (result: T?) -> Unit): BackendTask<T> {
         errorListeners.add(onErrorListener)
         return this
     }
