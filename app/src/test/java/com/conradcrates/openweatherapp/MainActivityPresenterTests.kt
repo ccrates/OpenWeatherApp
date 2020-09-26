@@ -9,18 +9,21 @@ import org.junit.Test
 
 class MainActivityPresenterTests {
 
-    private val UNTESTED_STRING = "untestedString"
 
     private val mockedWeatherProvider = mock<WeatherProvider>()
     private val mockedView = mock<MainActivityPresenter.View>()
 
-    private val stubbedWeatherData = WeatherData(UNTESTED_STRING)
+    private val stubbedCachedWeatherData = WeatherData("cached")
+    private val stubbedFetchedWeatherData = WeatherData("fetched")
+
+    private val backendTask = TestBackendTask(stubbedFetchedWeatherData, {})
 
     private val sut = MainActivityPresenter(mockedView, mockedWeatherProvider)
 
     @Before
     fun setup(){
-        whenever(mockedWeatherProvider.getCachedWeatherData()).thenReturn(stubbedWeatherData)
+        whenever(mockedWeatherProvider.getCachedWeatherData()).thenReturn(stubbedCachedWeatherData)
+        whenever(mockedWeatherProvider.fetchWeatherData()).thenReturn(backendTask)
     }
 
     // GIVEN the presenter has just been started
@@ -43,7 +46,7 @@ class MainActivityPresenterTests {
         sut.setup()
 
         verify(mockedWeatherProvider).getCachedWeatherData()
-        verify(mockedView).showWeatherData(stubbedWeatherData)
+        verify(mockedView).showWeatherData(stubbedCachedWeatherData)
         verify(mockedView, times(0)).showProgressSpinner()
     }
 
@@ -53,11 +56,25 @@ class MainActivityPresenterTests {
     // AND show the progress spinner
     @Test
     fun setup_noCachedData_doNotDisplay_showProgressSpinner(){
+        // Setting backend task to fail as we don't want it interfering with the caching test
+        backendTask.toFail()
         whenever(mockedWeatherProvider.getCachedWeatherData()).thenReturn(null)
 
         sut.setup()
 
         verify(mockedView, times(0)).showWeatherData(any())
         verify(mockedView).showProgressSpinner()
+    }
+
+    // GIVEN fetchWeatherData has been called
+    // AND cached data is already being displayer
+    // WHEN fetchWeatherData returns a value
+    // THEN display the newly fetched weather data
+    @Test
+    fun setup_hasFetchedWeatherData_displayWeatherData(){
+        sut.setup()
+
+        verify(mockedView).showWeatherData(stubbedCachedWeatherData)
+        verify(mockedView).showWeatherData(stubbedFetchedWeatherData)
     }
 }

@@ -4,5 +4,5 @@ import com.conradcrates.openweatherapp.models.WeatherData
 
 interface WeatherProviderService {
 
-    fun fetchWeatherData() : WeatherData
+    fun fetchWeatherData() : BackendTask<WeatherData>
 }

@@ -12,7 +12,7 @@ class WeatherProvider(
         return cachedWeatherData
     }
 
-    fun fetchWeatherData(){
-        weatherService.fetchWeatherData()
+    fun fetchWeatherData(): BackendTask<WeatherData>{
+        return weatherService.fetchWeatherData()
     }
 }

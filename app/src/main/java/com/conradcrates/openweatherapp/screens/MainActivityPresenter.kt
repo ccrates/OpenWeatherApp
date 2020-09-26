@@ -17,7 +17,9 @@ class MainActivityPresenter (
             view.showProgressSpinner()
         }
 
-        weatherProvider.fetchWeatherData()
+        weatherProvider.fetchWeatherData().addOnSuccessListener {
+            view.showWeatherData(it)
+        }
     }
 
     interface View{
