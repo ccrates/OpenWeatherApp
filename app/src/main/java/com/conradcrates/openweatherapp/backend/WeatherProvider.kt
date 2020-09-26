@@ -6,6 +6,12 @@ class WeatherProvider(
     private val weatherService: WeatherProviderService
 ) {
 
+    private val cachedWeatherData: WeatherData? = null
+
+    fun getCachedWeatherData(): WeatherData? {
+        return cachedWeatherData
+    }
+
     fun fetchWeatherData(){
         weatherService.fetchWeatherData()
     }

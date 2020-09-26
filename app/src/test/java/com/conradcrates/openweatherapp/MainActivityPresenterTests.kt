@@ -3,9 +3,7 @@ package com.conradcrates.openweatherapp
 import com.conradcrates.openweatherapp.backend.WeatherProvider
 import com.conradcrates.openweatherapp.models.WeatherData
 import com.conradcrates.openweatherapp.screens.MainActivityPresenter
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import org.junit.Before
 import org.junit.Test
 
@@ -22,7 +20,7 @@ class MainActivityPresenterTests {
 
     @Before
     fun setup(){
-//        whenever(mockedWeatherProvider.fetchWeatherData()).thenReturn(stubbedWeatherData)
+        whenever(mockedWeatherProvider.getCachedWeatherData()).thenReturn(stubbedWeatherData)
     }
 
     // GIVEN the presenter has just been started
@@ -37,11 +35,29 @@ class MainActivityPresenterTests {
 
     // GIVEN the presenter has just been started
     // WHEN setup is called
-    // THEN show the progress spinner
+    // THEN check to see if there is cached weather data
+    // AND display that weather data
+    // AND do not show the progress spinner
     @Test
-    fun setup_showProgressSpinner(){
+    fun setup_getCachedData_andDisplay(){
         sut.setup()
 
+        verify(mockedWeatherProvider).getCachedWeatherData()
+        verify(mockedView).showWeatherData(stubbedWeatherData)
+        verify(mockedView, times(0)).showProgressSpinner()
+    }
+
+    // GIVEN the weather provider does not have cached data
+    // WHEN setup is called
+    // THEN do not show the weather data
+    // AND show the progress spinner
+    @Test
+    fun setup_noCachedData_doNotDisplay_showProgressSpinner(){
+        whenever(mockedWeatherProvider.getCachedWeatherData()).thenReturn(null)
+
+        sut.setup()
+
+        verify(mockedView, times(0)).showWeatherData(any())
         verify(mockedView).showProgressSpinner()
     }
 }
