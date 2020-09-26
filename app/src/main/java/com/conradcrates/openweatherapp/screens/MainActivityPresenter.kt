@@ -1,8 +1,11 @@
-package com.conradcrates.openweatherapp
+package com.conradcrates.openweatherapp.screens
+
+import com.conradcrates.openweatherapp.backend.WeatherProvider
 
 class MainActivityPresenter (
     private val view: View,
-    private val weatherProvider: WeatherProvider){
+    private val weatherProvider: WeatherProvider
+){
 
     fun setup(){
         view.showProgressSpinner()
