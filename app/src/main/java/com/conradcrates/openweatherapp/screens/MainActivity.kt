@@ -8,6 +8,7 @@ import com.conradcrates.openweatherapp.R
 import com.conradcrates.openweatherapp.backend.WeatherProvider
 import com.conradcrates.openweatherapp.backend.retrofit.RetrofitWeatherProviderService
 import com.conradcrates.openweatherapp.models.WeatherData
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
 
@@ -17,7 +18,6 @@ class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.toolbar))
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
     }
 
     override fun showWeatherData(weatherData: WeatherData) {
+        text_condition_value.text = weatherData.current.weather[0].description
     }
 
     override fun showProgressSpinner() {
