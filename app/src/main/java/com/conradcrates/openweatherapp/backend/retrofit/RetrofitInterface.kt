@@ -12,6 +12,7 @@ interface RetrofitInterface {
         @Query("lat") lat: String,
         @Query("lon") long: String,
         @Query("appid") apiKey: String,
-        @Query("exclude") excludeCSV: String?
+        @Query("exclude") excludeCSV: String?,
+        @Query("units") units: String
     ): Call<WeatherData>
 }

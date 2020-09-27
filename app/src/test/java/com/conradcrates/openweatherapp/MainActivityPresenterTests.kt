@@ -1,6 +1,7 @@
 package com.conradcrates.openweatherapp
 
 import com.conradcrates.openweatherapp.backend.WeatherProvider
+import com.conradcrates.openweatherapp.models.CurrentWeatherData
 import com.conradcrates.openweatherapp.models.WeatherData
 import com.conradcrates.openweatherapp.screens.MainActivityPresenter
 import com.nhaarman.mockitokotlin2.*
@@ -9,16 +10,28 @@ import org.junit.Test
 
 class MainActivityPresenterTests {
 
+    private val UNTESTED_LONG = 404L
+    private val UNTESTED_FLOAT = 4.04f
 
     private val mockedWeatherProvider = mock<WeatherProvider>()
     private val mockedView = mock<MainActivityPresenter.View>()
 
-    private val stubbedCachedWeatherData = WeatherData("cached")
-    private val stubbedFetchedWeatherData = WeatherData("fetched")
+    private val stubbedCachedWeatherData = createStubbedWeatherData("cached")
+    private val stubbedFetchedWeatherData = createStubbedWeatherData("fetched")
 
     private val backendTask = TestBackendTask(stubbedFetchedWeatherData, {})
 
     private val sut = MainActivityPresenter(mockedView, mockedWeatherProvider)
+
+    private fun createStubbedWeatherData(state: String): WeatherData{
+        return WeatherData(
+            state, state,
+            CurrentWeatherData(
+                UNTESTED_LONG, UNTESTED_LONG, UNTESTED_LONG, UNTESTED_FLOAT, UNTESTED_FLOAT,
+                UNTESTED_FLOAT, arrayOf()
+            )
+        )
+    }
 
     @Before
     fun setup(){
@@ -46,7 +59,7 @@ class MainActivityPresenterTests {
         sut.setup()
 
         verify(mockedWeatherProvider).getCachedWeatherData()
-        verify(mockedView).showWeatherData(stubbedCachedWeatherData)
+        verify(mockedView).showWeatherData(stubbedCachedWeatherData.current)
         verify(mockedView, times(0)).showProgressSpinner()
     }
 
@@ -67,14 +80,12 @@ class MainActivityPresenterTests {
     }
 
     // GIVEN fetchWeatherData has been called
-    // AND cached data is already being displayer
     // WHEN fetchWeatherData returns a value
     // THEN display the newly fetched weather data
     @Test
-    fun setup_hasFetchedWeatherData_displayWeatherData(){
-        sut.setup()
+    fun fetchWeatherData_FetchedWeatherData_displayWeatherData(){
+        sut.fetchWeatherData()
 
-        verify(mockedView).showWeatherData(stubbedCachedWeatherData)
-        verify(mockedView).showWeatherData(stubbedFetchedWeatherData)
+        verify(mockedView).showWeatherData(stubbedFetchedWeatherData.current)
     }
 }

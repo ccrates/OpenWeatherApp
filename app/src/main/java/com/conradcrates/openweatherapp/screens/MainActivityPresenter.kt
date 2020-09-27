@@ -1,7 +1,7 @@
 package com.conradcrates.openweatherapp.screens
 
 import com.conradcrates.openweatherapp.backend.WeatherProvider
-import com.conradcrates.openweatherapp.models.WeatherData
+import com.conradcrates.openweatherapp.models.CurrentWeatherData
 
 class MainActivityPresenter (
     private val view: View,
@@ -12,13 +12,17 @@ class MainActivityPresenter (
         val cachedData = weatherProvider.getCachedWeatherData()
 
         if(cachedData != null){
-            view.showWeatherData(cachedData)
+            view.showWeatherData(cachedData.current)
         } else {
             view.showProgressSpinner()
         }
 
+        fetchWeatherData()
+    }
+
+    fun fetchWeatherData(){
         weatherProvider.fetchWeatherData().addOnSuccessListener {
-            view.showWeatherData(it)
+            view.showWeatherData(it.current)
         }
     }
 
@@ -26,6 +30,6 @@ class MainActivityPresenter (
 
         fun showProgressSpinner()
 
-        fun showWeatherData(weatherData: WeatherData)
+        fun showWeatherData(weatherData: CurrentWeatherData)
     }
 }

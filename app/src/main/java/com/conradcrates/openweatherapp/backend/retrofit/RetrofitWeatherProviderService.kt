@@ -28,7 +28,8 @@ class RetrofitWeatherProviderService: WeatherProviderService {
         val long = "-0.119420"
         val apiKey = "9d6b31614315262059403159b7c4d3b6"
         val exclude = "minutely,hourly,daily,alerts"
-        val call = service.fetchWeatherData(lot, long, apiKey, exclude)
+        val units = "metric"
+        val call = service.fetchWeatherData(lot, long, apiKey, exclude, units)
 
         return BackendTask { task ->
             call.enqueue(object : Callback<WeatherData> {
