@@ -22,7 +22,7 @@ class TestBackendTask<T>(private val result: T, task: (BackendTask<T>) -> Unit):
         return this
     }
 
-    override fun addOnErrorListener(onErrorListener: (result: T) -> Unit): TestBackendTask<T> {
+    override fun addOnErrorListener(onErrorListener: (result: T?) -> Unit): TestBackendTask<T> {
         super.addOnErrorListener(onErrorListener)
         if (!success) {
             errorResult(result)
