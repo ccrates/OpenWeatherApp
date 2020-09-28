@@ -9,4 +9,7 @@
     <string name="main_text_windspeed">Wind Speed:</string>
     <string name="main_text_sunrise">Sunrise:</string>
     <string name="main_text_sunset">Sunset:</string>
+
+    <string name="main_dialogue_networkTitle">You are offline</string>
+    <string name="main_dialogue_networkBody">You will need to connect to the internet to get up to date weather information</string>
 </resources>

@@ -6,6 +6,7 @@ import com.conradcrates.openweatherapp.models.CurrentWeatherData
 import com.conradcrates.openweatherapp.models.LocationData
 import com.conradcrates.openweatherapp.models.WeatherData
 import com.conradcrates.openweatherapp.screens.MainActivityPresenter
+import com.conradcrates.openweatherapp.utils.NetworkManager
 import com.nhaarman.mockitokotlin2.*
 import org.junit.Before
 import org.junit.Test
@@ -18,6 +19,7 @@ class MainActivityPresenterTests {
 
     private val mockedWeatherProvider = mock<WeatherProvider>()
     private val mockedLocationProvider = mock<LocationProvider>()
+    private val mockedNetworkManager = mock<NetworkManager>()
     private val mockedView = mock<MainActivityPresenter.View>()
 
     private val stubbedCachedWeatherData = createStubbedWeatherData("cached")
@@ -29,7 +31,8 @@ class MainActivityPresenterTests {
     private val backendTask = TestBackendTask(stubbedFetchedWeatherData, {})
 
     private val sut =
-        MainActivityPresenter(mockedView, mockedWeatherProvider, mockedLocationProvider)
+        MainActivityPresenter(mockedView, mockedWeatherProvider,
+            mockedLocationProvider, mockedNetworkManager)
 
     private fun createStubbedWeatherData(state: String): WeatherData {
         return WeatherData(
@@ -48,6 +51,7 @@ class MainActivityPresenterTests {
         whenever(mockedLocationProvider.fetchLocation(callbackCaptor.capture())).then {
             callbackCaptor.firstValue.invoke(stubbedLocationData)
         }
+        whenever(mockedNetworkManager.isNetworkAvailable()).thenReturn(true)
     }
 
     // GIVEN the presenter has just been started
@@ -118,5 +122,17 @@ class MainActivityPresenterTests {
         sut.setup()
 
         verify(mockedView).showInfoText(R.string.main_text_fetchingLocation)
+    }
+
+    // GIVEN the phone has no network available
+    // WHEN fetchWeatherData is called
+    // THEN show a dialogue to the user
+    @Test
+    fun fetchWeatherData_noNetworkAvailable_showErrorDialogue(){
+        whenever(mockedNetworkManager.isNetworkAvailable()).thenReturn(false)
+
+        sut.fetchWeatherData()
+
+        verify(mockedView).showNetworkDialogue()
     }
 }

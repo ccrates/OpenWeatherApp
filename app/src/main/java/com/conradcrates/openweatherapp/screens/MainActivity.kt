@@ -1,7 +1,9 @@
 package com.conradcrates.openweatherapp.screens
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.conradcrates.openweatherapp.R
 import com.conradcrates.openweatherapp.backend.WeatherProvider
@@ -10,8 +12,10 @@ import com.conradcrates.openweatherapp.location.GPSLocationProviderService
 import com.conradcrates.openweatherapp.location.LocationProvider
 import com.conradcrates.openweatherapp.models.CurrentWeatherData
 import com.conradcrates.openweatherapp.utils.DateTimeConverter
+import com.conradcrates.openweatherapp.utils.NetworkManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
 
@@ -20,7 +24,9 @@ class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
     private val presenter = MainActivityPresenter(
         this,
         WeatherProvider(RetrofitWeatherProviderService(), this),
-        LocationProvider(locationProviderService))
+        LocationProvider(locationProviderService),
+        NetworkManager(this)
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,5 +55,13 @@ class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
 
     override fun hideInfoText() {
         text_fetching.visibility = View.INVISIBLE
+    }
+
+    override fun showNetworkDialogue() {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.main_dialogue_networkTitle))
+            .setMessage(getString(R.string.main_dialogue_networkBody))
+            .setPositiveButton("OK", null)
+            .show()
     }
 }
