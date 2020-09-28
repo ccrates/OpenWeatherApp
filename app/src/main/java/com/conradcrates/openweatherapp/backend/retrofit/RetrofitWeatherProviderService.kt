@@ -2,6 +2,7 @@ package com.conradcrates.openweatherapp.backend.retrofit
 
 import com.conradcrates.openweatherapp.backend.BackendTask
 import com.conradcrates.openweatherapp.backend.WeatherProviderService
+import com.conradcrates.openweatherapp.constants.AppConstants
 import com.conradcrates.openweatherapp.models.WeatherData
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,7 +25,7 @@ class RetrofitWeatherProviderService: WeatherProviderService {
     }
 
     override fun fetchWeatherData(lat: Double, long: Double): BackendTask<WeatherData> {
-        val apiKey = "9d6b31614315262059403159b7c4d3b6"
+        val apiKey = AppConstants.API_KEY
         val exclude = "minutely,hourly,daily,alerts"
         val units = "metric"
         val call = service.fetchWeatherData(lat.toString(), long.toString(), apiKey, exclude, units)

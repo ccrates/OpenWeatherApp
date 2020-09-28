@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
     private val locationProviderService = GPSLocationProviderService()
     private val presenter = MainActivityPresenter(
         this,
-        WeatherProvider(RetrofitWeatherProviderService()),
+        WeatherProvider(RetrofitWeatherProviderService(), this),
         LocationProvider(locationProviderService))
 
     override fun onCreate(savedInstanceState: Bundle?) {
