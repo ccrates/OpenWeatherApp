@@ -24,11 +24,14 @@ class MainActivityPresenterTests {
     private val stubbedFetchedWeatherData = createStubbedWeatherData("fetched")
     private val stubbedLocationData = LocationData(UNTESTED_DOUBLE, UNTESTED_DOUBLE)
 
+    private val callbackCaptor = argumentCaptor<(LocationData) -> Unit>()
+
     private val backendTask = TestBackendTask(stubbedFetchedWeatherData, {})
 
-    private val sut = MainActivityPresenter(mockedView, mockedWeatherProvider, mockedLocationProvider)
+    private val sut =
+        MainActivityPresenter(mockedView, mockedWeatherProvider, mockedLocationProvider)
 
-    private fun createStubbedWeatherData(state: String): WeatherData{
+    private fun createStubbedWeatherData(state: String): WeatherData {
         return WeatherData(
             state, state,
             CurrentWeatherData(
@@ -39,17 +42,19 @@ class MainActivityPresenterTests {
     }
 
     @Before
-    fun setup(){
+    fun setup() {
         whenever(mockedWeatherProvider.getCachedWeatherData()).thenReturn(stubbedCachedWeatherData)
         whenever(mockedWeatherProvider.fetchWeatherData(any(), any())).thenReturn(backendTask)
-        whenever(mockedLocationProvider.getLocation()).thenReturn(stubbedLocationData)
+        whenever(mockedLocationProvider.fetchLocation(callbackCaptor.capture())).then {
+            callbackCaptor.firstValue.invoke(stubbedLocationData)
+        }
     }
 
     // GIVEN the presenter has just been started
     // WHEN setup is called
     // THEN fetch weather data
     @Test
-    fun setup_fetchWeatherData(){
+    fun setup_fetchWeatherData() {
         sut.setup()
 
         verify(mockedWeatherProvider).fetchWeatherData(any(), any())
@@ -60,7 +65,7 @@ class MainActivityPresenterTests {
     // THEN check to see if there is cached weather data
     // AND display that weather data
     @Test
-    fun setup_getCachedData_andDisplay(){
+    fun setup_getCachedData_andDisplay() {
         sut.setup()
 
         verify(mockedWeatherProvider).getCachedWeatherData()
@@ -72,7 +77,7 @@ class MainActivityPresenterTests {
     // THEN do not show the weather data
     // AND show the progress spinner
     @Test
-    fun setup_noCachedData_doNotDisplay_showProgressSpinner(){
+    fun setup_noCachedData_doNotDisplay_showProgressSpinner() {
         // Setting backend task to fail as we don't want it interfering with the caching test
         backendTask.toFail()
         whenever(mockedWeatherProvider.getCachedWeatherData()).thenReturn(null)
@@ -80,14 +85,14 @@ class MainActivityPresenterTests {
         sut.setup()
 
         verify(mockedView, times(0)).showWeatherData(any())
-        verify(mockedView).showProgressSpinner()
+        verify(mockedView).showInfoText(R.string.main_text_fetchingWeather)
     }
 
     // GIVEN fetchWeatherData has been called
     // WHEN fetchWeatherData returns a value
     // THEN display the newly fetched weather data
     @Test
-    fun fetchWeatherData_fetchedWeatherData_displayWeatherData(){
+    fun fetchWeatherData_fetchedWeatherData_displayWeatherData() {
         sut.fetchWeatherData()
 
         verify(mockedView).showWeatherData(stubbedFetchedWeatherData.current)
@@ -97,10 +102,21 @@ class MainActivityPresenterTests {
     // WHEN fetchWeatherData returns a value
     // THEN hide the progress spinner
     @Test
-    fun fetchWeatherData_fetchedWeatherData_hideProgressSpinner(){
+    fun fetchWeatherData_fetchedWeatherData_hideProgressSpinner() {
         sut.fetchWeatherData()
 
         verify(mockedView).showWeatherData(stubbedFetchedWeatherData.current)
-        verify(mockedView).hideProgressSpinner()
+        verify(mockedView).hideInfoText()
+    }
+
+    // GIVEN the app has just started up
+    // AND location has not been fully fetched yet
+    // WHEN setup is called
+    // THEN show fetching location message
+    @Test
+    fun setup_noLocation_showFetchingLocationMessage() {
+        sut.setup()
+
+        verify(mockedView).showInfoText(R.string.main_text_fetchingLocation)
     }
 }

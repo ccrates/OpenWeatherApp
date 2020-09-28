@@ -12,7 +12,8 @@
         android:id="@+id/text_fetching"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/main_text_fetching"
+        android:text="Message Info TextView"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>

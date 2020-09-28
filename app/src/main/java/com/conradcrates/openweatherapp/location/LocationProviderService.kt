@@ -4,5 +4,5 @@ import com.conradcrates.openweatherapp.models.LocationData
 
 interface LocationProviderService {
 
-    fun fetchLocation(): LocationData?
+    fun fetchLocation(callback: (LocationData) -> Unit)
 }

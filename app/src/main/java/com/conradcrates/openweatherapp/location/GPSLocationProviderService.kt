@@ -48,17 +48,25 @@ class GPSLocationProviderService: LocationProviderService, LocationListener {
         )
     }
 
+    private val locationListeners = ArrayList<(LocationData) -> Unit>()
     private var lastKnownLocation: Location? = null
 
-    override fun fetchLocation(): LocationData? {
+    override fun fetchLocation(callback: (LocationData) -> Unit) {
         prepareLocationManager()
-        return lastKnownLocation?.let {
-            LocationData(it.latitude, it.longitude)
+        locationListeners.add(callback)
+        lastKnownLocation?.let {
+            callback.invoke(LocationData(it.latitude, it.longitude))
         }
     }
 
     override fun onLocationChanged(location: Location?) {
         lastKnownLocation = location
+        location?.let {
+            for (listener in locationListeners) {
+                listener.invoke(LocationData(it.latitude, it.longitude))
+            }
+            locationListeners.clear()
+        }
     }
 
     override fun onProviderEnabled(p0: String?) {

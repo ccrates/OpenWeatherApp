@@ -11,7 +11,6 @@ import com.conradcrates.openweatherapp.location.LocationProvider
 import com.conradcrates.openweatherapp.models.CurrentWeatherData
 import com.conradcrates.openweatherapp.utils.DateTimeConverter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
@@ -43,11 +42,12 @@ class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
         text_sunset_value.text = DateTimeConverter.getHourOfDayFromDateTimeSeconds(weatherData.sunset)
     }
 
-    override fun showProgressSpinner() {
+    override fun showInfoText(resourceId: Int) {
+        text_fetching.text = getString(resourceId)
         text_fetching.visibility = View.VISIBLE
     }
 
-    override fun hideProgressSpinner() {
+    override fun hideInfoText() {
         text_fetching.visibility = View.INVISIBLE
     }
 }
