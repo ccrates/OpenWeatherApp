@@ -1,7 +1,9 @@
 package com.conradcrates.openweatherapp
 
 import com.conradcrates.openweatherapp.backend.WeatherProvider
+import com.conradcrates.openweatherapp.location.LocationProvider
 import com.conradcrates.openweatherapp.models.CurrentWeatherData
+import com.conradcrates.openweatherapp.models.LocationData
 import com.conradcrates.openweatherapp.models.WeatherData
 import com.conradcrates.openweatherapp.screens.MainActivityPresenter
 import com.nhaarman.mockitokotlin2.*
@@ -12,16 +14,19 @@ class MainActivityPresenterTests {
 
     private val UNTESTED_LONG = 404L
     private val UNTESTED_FLOAT = 4.04f
+    private val UNTESTED_DOUBLE = 4.04
 
     private val mockedWeatherProvider = mock<WeatherProvider>()
+    private val mockedLocationProvider = mock<LocationProvider>()
     private val mockedView = mock<MainActivityPresenter.View>()
 
     private val stubbedCachedWeatherData = createStubbedWeatherData("cached")
     private val stubbedFetchedWeatherData = createStubbedWeatherData("fetched")
+    private val stubbedLocationData = LocationData(UNTESTED_DOUBLE, UNTESTED_DOUBLE)
 
     private val backendTask = TestBackendTask(stubbedFetchedWeatherData, {})
 
-    private val sut = MainActivityPresenter(mockedView, mockedWeatherProvider)
+    private val sut = MainActivityPresenter(mockedView, mockedWeatherProvider, mockedLocationProvider)
 
     private fun createStubbedWeatherData(state: String): WeatherData{
         return WeatherData(
@@ -36,7 +41,8 @@ class MainActivityPresenterTests {
     @Before
     fun setup(){
         whenever(mockedWeatherProvider.getCachedWeatherData()).thenReturn(stubbedCachedWeatherData)
-        whenever(mockedWeatherProvider.fetchWeatherData()).thenReturn(backendTask)
+        whenever(mockedWeatherProvider.fetchWeatherData(any(), any())).thenReturn(backendTask)
+        whenever(mockedLocationProvider.getLocation()).thenReturn(stubbedLocationData)
     }
 
     // GIVEN the presenter has just been started
@@ -46,7 +52,7 @@ class MainActivityPresenterTests {
     fun setup_fetchWeatherData(){
         sut.setup()
 
-        verify(mockedWeatherProvider).fetchWeatherData()
+        verify(mockedWeatherProvider).fetchWeatherData(any(), any())
     }
 
     // GIVEN the presenter has just been started
