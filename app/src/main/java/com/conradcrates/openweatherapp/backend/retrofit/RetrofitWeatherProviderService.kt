@@ -23,13 +23,11 @@ class RetrofitWeatherProviderService: WeatherProviderService {
         service = retrofit.create(RetrofitInterface::class.java)
     }
 
-    override fun fetchWeatherData(): BackendTask<WeatherData> {
-        val lot = "51.503471"
-        val long = "-0.119420"
+    override fun fetchWeatherData(lat: Double, long: Double): BackendTask<WeatherData> {
         val apiKey = "9d6b31614315262059403159b7c4d3b6"
         val exclude = "minutely,hourly,daily,alerts"
         val units = "metric"
-        val call = service.fetchWeatherData(lot, long, apiKey, exclude, units)
+        val call = service.fetchWeatherData(lat.toString(), long.toString(), apiKey, exclude, units)
 
         return BackendTask { task ->
             call.enqueue(object : Callback<WeatherData> {

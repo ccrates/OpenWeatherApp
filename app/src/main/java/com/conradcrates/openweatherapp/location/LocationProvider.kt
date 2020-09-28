@@ -4,7 +4,7 @@ import com.conradcrates.openweatherapp.models.LocationData
 
 class LocationProvider(private val locationService: LocationProviderService) {
 
-    fun getLocation(): LocationData{
+    fun getLocation(): LocationData? {
         return locationService.fetchLocation()
     }
 }

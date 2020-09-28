@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.conradcrates.openweatherapp.R
 import com.conradcrates.openweatherapp.backend.WeatherProvider
 import com.conradcrates.openweatherapp.backend.retrofit.RetrofitWeatherProviderService
+import com.conradcrates.openweatherapp.location.GPSLocationProviderService
+import com.conradcrates.openweatherapp.location.LocationProvider
 import com.conradcrates.openweatherapp.models.CurrentWeatherData
 import com.conradcrates.openweatherapp.utils.DateTimeConverter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -13,8 +15,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
 
-    // TODO Dependency injection here to be improved
-    private val presenter = MainActivityPresenter(this, WeatherProvider(RetrofitWeatherProviderService()))
+    // TODO Dependency injection here would want to be improved
+    private val locationProviderService = GPSLocationProviderService()
+    private val presenter = MainActivityPresenter(
+        this,
+        WeatherProvider(RetrofitWeatherProviderService()),
+        LocationProvider(locationProviderService))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +29,8 @@ class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
             presenter.fetchWeatherData()
         }
+
+        locationProviderService.activity = this
 
         presenter.setup()
     }

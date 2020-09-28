@@ -1,11 +1,13 @@
 package com.conradcrates.openweatherapp.screens
 
 import com.conradcrates.openweatherapp.backend.WeatherProvider
+import com.conradcrates.openweatherapp.location.LocationProvider
 import com.conradcrates.openweatherapp.models.CurrentWeatherData
 
 class MainActivityPresenter (
     private val view: View,
-    private val weatherProvider: WeatherProvider
+    private val weatherProvider: WeatherProvider,
+    private val locationProvider: LocationProvider
 ){
 
     fun setup(){
@@ -21,8 +23,10 @@ class MainActivityPresenter (
     }
 
     fun fetchWeatherData(){
-        weatherProvider.fetchWeatherData().addOnSuccessListener {
-            view.showWeatherData(it.current)
+        locationProvider.getLocation()?.let { location ->
+            weatherProvider.fetchWeatherData(location.lat, location.long).addOnSuccessListener {
+                view.showWeatherData(it.current)
+            }
         }
     }
 
