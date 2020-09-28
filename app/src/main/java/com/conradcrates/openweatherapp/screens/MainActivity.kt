@@ -1,10 +1,10 @@
 package com.conradcrates.openweatherapp.screens
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.conradcrates.openweatherapp.R
 import com.conradcrates.openweatherapp.backend.WeatherProvider
 import com.conradcrates.openweatherapp.backend.retrofit.RetrofitWeatherProviderService
@@ -15,7 +15,6 @@ import com.conradcrates.openweatherapp.utils.DateTimeConverter
 import com.conradcrates.openweatherapp.utils.NetworkManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
-
 
 class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
 
@@ -42,10 +41,19 @@ class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
     }
 
     override fun showWeatherData(weatherData: CurrentWeatherData) {
+        val temperatureText = "${weatherData.temp}°c"
+        val windSpeedText = "${weatherData.wind_speed} km/h"
         text_condition_value.text = weatherData.weather[0].description
-        text_temperature_value.text = weatherData.temp.toString()
-        text_windspeed_value.text = weatherData.wind_speed.toString()
+        text_temperature_value.text = temperatureText
+        text_windspeed_value.text = windSpeedText
         text_sunset_value.text = DateTimeConverter.getHourOfDayFromDateTimeSeconds(weatherData.sunset)
+
+        loadImageAsset(weatherData)
+    }
+
+    // A quick and dirty glide call because I'm running out of time
+    private fun loadImageAsset(weatherData: CurrentWeatherData){
+        Glide.with(this).load("https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png").into(image_conditionIcon)
     }
 
     override fun showInfoText(resourceId: Int) {

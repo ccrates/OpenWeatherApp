@@ -4,7 +4,6 @@ import android.content.Context
 import com.conradcrates.openweatherapp.constants.AppConstants
 import com.conradcrates.openweatherapp.models.WeatherData
 import java.io.*
-import java.lang.Exception
 
 class WeatherProvider(
     private val weatherService: WeatherProviderService,

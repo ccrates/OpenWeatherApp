@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.cardview.widget.CardView
-        android:layout_width="240dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/medium_margin"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,8 +43,17 @@
                 android:id="@+id/text_condition_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/large_margin"
                 app:layout_constraintStart_toEndOf="@id/text_condition"
                 app:layout_constraintTop_toTopOf="@id/text_condition"/>
+
+            <ImageView
+                android:id="@+id/image_conditionIcon"
+                android:layout_width="@dimen/icon_dimen"
+                android:layout_height="@dimen/icon_dimen"
+                android:layout_marginStart="@dimen/large_margin"
+                app:layout_constraintStart_toEndOf="@id/text_condition_value"
+                app:layout_constraintTop_toTopOf="@id/text_condition_value"/>
 
             <TextView
                 android:id="@+id/text_temperature"
