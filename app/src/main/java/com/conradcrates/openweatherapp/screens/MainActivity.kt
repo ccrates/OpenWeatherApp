@@ -1,6 +1,7 @@
 package com.conradcrates.openweatherapp.screens
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.conradcrates.openweatherapp.R
 import com.conradcrates.openweatherapp.backend.WeatherProvider
@@ -43,5 +44,10 @@ class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
     }
 
     override fun showProgressSpinner() {
+        text_fetching.visibility = View.VISIBLE
+    }
+
+    override fun hideProgressSpinner() {
+        text_fetching.visibility = View.INVISIBLE
     }
 }

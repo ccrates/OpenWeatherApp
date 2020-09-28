@@ -59,14 +59,12 @@ class MainActivityPresenterTests {
     // WHEN setup is called
     // THEN check to see if there is cached weather data
     // AND display that weather data
-    // AND do not show the progress spinner
     @Test
     fun setup_getCachedData_andDisplay(){
         sut.setup()
 
         verify(mockedWeatherProvider).getCachedWeatherData()
         verify(mockedView).showWeatherData(stubbedCachedWeatherData.current)
-        verify(mockedView, times(0)).showProgressSpinner()
     }
 
     // GIVEN the weather provider does not have cached data
@@ -89,9 +87,20 @@ class MainActivityPresenterTests {
     // WHEN fetchWeatherData returns a value
     // THEN display the newly fetched weather data
     @Test
-    fun fetchWeatherData_FetchedWeatherData_displayWeatherData(){
+    fun fetchWeatherData_fetchedWeatherData_displayWeatherData(){
         sut.fetchWeatherData()
 
         verify(mockedView).showWeatherData(stubbedFetchedWeatherData.current)
+    }
+
+    // GIVEN fetchWeatherData has been called
+    // WHEN fetchWeatherData returns a value
+    // THEN hide the progress spinner
+    @Test
+    fun fetchWeatherData_fetchedWeatherData_hideProgressSpinner(){
+        sut.fetchWeatherData()
+
+        verify(mockedView).showWeatherData(stubbedFetchedWeatherData.current)
+        verify(mockedView).hideProgressSpinner()
     }
 }

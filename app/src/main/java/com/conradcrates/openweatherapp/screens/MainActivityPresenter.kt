@@ -13,10 +13,8 @@ class MainActivityPresenter (
     fun setup(){
         val cachedData = weatherProvider.getCachedWeatherData()
 
-        if(cachedData != null){
+        if(cachedData != null) {
             view.showWeatherData(cachedData.current)
-        } else {
-            view.showProgressSpinner()
         }
 
         fetchWeatherData()
@@ -24,16 +22,20 @@ class MainActivityPresenter (
 
     fun fetchWeatherData(){
         locationProvider.getLocation()?.let { location ->
+            view.showProgressSpinner()
             weatherProvider.fetchWeatherData(location.lat, location.long).addOnSuccessListener {
                 view.showWeatherData(it.current)
+                view.hideProgressSpinner()
             }
         }
     }
 
     interface View{
 
+        fun showWeatherData(weatherData: CurrentWeatherData)
+
         fun showProgressSpinner()
 
-        fun showWeatherData(weatherData: CurrentWeatherData)
+        fun hideProgressSpinner()
     }
 }
